@@ -26,6 +26,26 @@ $('img').okzoom({
 </code>
 </pre>
 
+<pre class='js'>
+<code>
+$('img').okzoom({
+  width: 300,
+  height: 300,
+  round: true,
+  background: "#fff",
+  backgroundRepeat: "no-repeat",
+  shadow: "0 0 5px #000",
+  border: "1px solid #25aae1",
+  scaleWidth: 4000,
+  toggleOnClick: true,
+  toggleCondition: function(event){
+    return jQuery('.swiper-container').hasClass('fullscreen');
+  }
+});
+
+</code>
+</pre>
+
 h3. Options
 
 |Usage|||
@@ -37,7 +57,8 @@ h3. Options
 |backgroundRepeat|repeat the image within the loupe|no-repeat|
 |border|border around the loupe|0|
 |shadow|box-shadow on the loupe|0 0 5px #000|
-
+|toggleOnClick| toogle loupe on click|false|
+|toggleCondition| condition to show loupe on click |function(e){ return true; }
 h3. Data Attribute
 
 Typically, we use this plugin on an image that has been sized down in HTML, and the loupe displays the image at its normal size.  If you like, you can add an HTML5 data attribute **data-okimage** to your image to substitute alternative content inside the loupe.

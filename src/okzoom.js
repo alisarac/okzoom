@@ -75,7 +75,7 @@ $(function($){
       base.$el.data("okzoom", base);
 
       base.options = options;
-      
+
       if (is_mobile) {
         base.$el.bind('touchstart', (function(b) {
           return function(e) {
@@ -102,9 +102,33 @@ $(function($){
         }(base)));
       }
       else {
-        $(base.el).bind('mouseover', (function(b) {
-          return function(e) { $.fn.okzoom.build(b, e); };
-        }(base)));
+        if(base.options.toggleOnClick){
+          $(base.el).bind('click', (function(b) {
+            return function(e) {
+              if(base.options.toggleCondition(e)){
+                $.fn.okzoom.build(b, e);
+                base.is_zoomed = !base.is_zoomed
+                e.stopPropagation();
+              }
+            };
+          }(base)));
+          base.$listener.bind('click', (function(b) {
+            return function(e) {
+              base.is_zoomed = !base.is_zoomed
+              if(!base.is_zoomed){
+                $.fn.okzoom.mouseout(b, e);
+                e.stopPropagation();
+              }
+            };
+          }(base)));
+        }else{
+          $(base.el).bind('mouseover', (function(b) {
+            return function(e) {
+              $.fn.okzoom.build(b, e);
+            };
+          }(base)));
+        }
+
 
         base.$listener.bind('mousemove', (function(b) {
           return function(e) { $.fn.okzoom.mousemove(b, e); };
@@ -150,9 +174,12 @@ $(function($){
     "transformOrigin": is_mobile ? "50% 100%" : "50% 50%",
     "transitionTime": 200,
     "transitionTimingFunction": "cubic-bezier(0,0,0,1)",
+    "toggleOnClick": false,
+    "toggleCondition": function(e){ return true; }
   };
 
   $.fn.okzoom.build = function(base, e){
+    console.log("on build");
     if (! base.has_data_image) {
       base.img = base.el;
     }
@@ -252,6 +279,8 @@ $(function($){
 
   $.fn.okzoom.mouseout = function (base, e) {
     // base.loupe.style.display = "none";
+    base.is_zoomed = false;
+    console.log("mouse out");
     if (base.options.transform) {
       base.loupe.style[transformProp] = base.options.transform[0]
       base.timeout = setTimeout(function(){
